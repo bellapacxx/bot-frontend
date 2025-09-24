@@ -2,12 +2,11 @@ import React, { Suspense } from "react";
 import StakePageClient from "./StakePageClient";
 
 interface PageProps {
-  params: Promise<{ stake: string }>; // mark as Promise
+  params: { stake: string }; // /10 → params.stake = "10"
 }
 
-export default async function StakePage({ params }: PageProps) {
-  const resolvedParams = await params; // ✅ await params
-  const stake = Number(resolvedParams.stake);
+export default function StakePage({ params }: PageProps) {
+  const stake = Number(params.stake); // convert "10" → 10
 
   return (
     <Suspense fallback={<div>Loading lobby…</div>}>
