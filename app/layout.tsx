@@ -4,8 +4,8 @@ import "./globals.css";
 import { ReactNode } from "react";
 
 export const metadata = {
-  title: "Bingo Lobby",
-  description: "Play bingo online with real-time lobbies",
+  title: "Lucky Bingo",
+  description: "Play bingo online",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
