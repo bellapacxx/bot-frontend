@@ -7,7 +7,6 @@ import {
   useState,
   ReactNode,
   useRef,
-  useCallback,
 } from "react";
 
 // --------------------
@@ -38,35 +37,22 @@ interface LobbyContextProps extends LobbyState {
   stake: number;
   telegramId: string;
   sendCardSelection: (card_id: number) => void;
-  sendBingo: (card_id: number) => void;
-  bingoWinner?: { telegramId: string; card_id: number } | undefined;
+   sendBingo: (card_id: number) => void; // <-- add this
+   bingoWinner?: { telegramId: string; card_id: number } | undefined;
 }
 
-type WSMessage = { action: "select_card"; card_id: number };
+type WSMessage = { action: "select_card"; card_id: number; };
 
 // --------------------
-// Normalize functions (stable, outside component)
+// Context
 // --------------------
-const normalizeCard = (card: unknown): CardNumbers => {
-  const c = card as Record<string, any>;
-  return {
-    B: Array.isArray(c.B) ? c.B.map((n: any) => (n != null ? Number(n) : null)) : [],
-    I: Array.isArray(c.I) ? c.I.map((n: any) => (n != null ? Number(n) : null)) : [],
-    N: Array.isArray(c.N) ? c.N.map((n: any) => (n != null ? Number(n) : null)) : [],
-    G: Array.isArray(c.G) ? c.G.map((n: any) => (n != null ? Number(n) : null)) : [],
-    O: Array.isArray(c.O) ? c.O.map((n: any) => (n != null ? Number(n) : null)) : [],
-    card_id: Number(c.card_id ?? 0),
-  };
-};
+const LobbyContext = createContext<LobbyContextProps | undefined>(undefined);
 
-const normalizeAvailableCard = (card: unknown): AvailableCard => ({
-  ...normalizeCard(card),
-  taken: Boolean((card as Record<string, any>).Taken || (card as Record<string, any>).taken),
-});
-
-// --------------------
-// Toast helper
-// --------------------
+interface Props {
+  stake: number;
+  telegramId: string;
+  children: ReactNode;
+}
 const showToast = (message: string) => {
   const el = document.createElement("div");
   el.textContent = message;
@@ -85,35 +71,42 @@ const showToast = (message: string) => {
 };
 
 // --------------------
-// Context
-// --------------------
-const LobbyContext = createContext<LobbyContextProps | undefined>(undefined);
-
-interface Props {
-  stake: number;
-  telegramId: string;
-  children: ReactNode;
-}
-
-// --------------------
 // Provider
 // --------------------
 export const WebSocketProvider = ({ stake, telegramId, children }: Props) => {
-  const [status, setStatus] = useState<"waiting" | "countdown" | "running">("waiting");
+  const [status, setStatus] = useState<"waiting" | "countdown" | "running">(
+    "waiting"
+  );
   const [countdown, setCountdown] = useState(30);
   const [availableCards, setAvailableCards] = useState<AvailableCard[]>([]);
   const [selectedCards, setSelectedCards] = useState<CardNumbers[]>([]);
   const [numbersDrawn, setNumbersDrawn] = useState<number[]>([]);
-  const [bingoWinner, setBingoWinner] = useState<{ telegramId: string; card_id: number } | undefined>(undefined);
-
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const messageQueue = useRef<WSMessage[]>([]);
+   const [bingoWinner, setBingoWinner] = useState<{ telegramId: string; card_id: number } | undefined>(undefined);
 
   // --------------------
-  // Connect WebSocket (stable via useCallback)
+  // Normalize cards
   // --------------------
-  const connectWebSocket = useCallback(() => {
+  const normalizeCard = (card: any): CardNumbers => ({
+    B: Array.isArray(card.B) ? card.B.map((n: null) => (n != null ? Number(n) : null)) : [],
+    I: Array.isArray(card.I) ? card.I.map((n: null) => (n != null ? Number(n) : null)) : [],
+    N: Array.isArray(card.N) ? card.N.map((n: null) => (n != null ? Number(n) : null)) : [],
+    G: Array.isArray(card.G) ? card.G.map((n: null) => (n != null ? Number(n) : null)) : [],
+    O: Array.isArray(card.O) ? card.O.map((n: null) => (n != null ? Number(n) : null)) : [],
+    card_id: Number(card.card_id ?? 0),
+  });
+
+  const normalizeAvailableCard = (card: any): AvailableCard => ({
+    ...normalizeCard(card),
+    taken: Boolean(card.Taken || card.taken),
+  });
+
+  // --------------------
+  // Connect WebSocket
+  // --------------------
+  const connectWebSocket = () => {
     if (wsRef.current) return;
 
     const ws = new WebSocket(
@@ -123,6 +116,7 @@ export const WebSocketProvider = ({ stake, telegramId, children }: Props) => {
 
     ws.onopen = () => {
       console.log("✅ Connected to lobby", stake);
+      // Flush queued messages
       messageQueue.current.forEach((msg) => ws.send(JSON.stringify(msg)));
       messageQueue.current = [];
     };
@@ -130,35 +124,44 @@ export const WebSocketProvider = ({ stake, telegramId, children }: Props) => {
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-
+        
         setStatus(data.status ?? "waiting");
         setCountdown(data.countdown ?? 0);
 
+        // Numbers drawn
         const numbers = data.numbersDrawn || data.numbers_drawn || [];
         setNumbersDrawn(Array.isArray(numbers) ? numbers.map(Number) : []);
 
+        // Available cards
         const cards = data.availableCards || data.available_cards || [];
-        setAvailableCards(Array.isArray(cards) ? cards.map(normalizeAvailableCard) : []);
+        const normalizedAvailable: AvailableCard[] = Array.isArray(cards)
+          ? cards.map(normalizeAvailableCard)
+          : [];
+        setAvailableCards(normalizedAvailable);
 
-        const selectedMap = data.selected || data.selected_cards || {};
-        setSelectedCards(
-          Object.values(selectedMap as Record<string, AvailableCard>)
-            .map(normalizeCard)
-            .filter(Boolean)
-        );
+        // Selected cards
+        // Selected cards
+const selectedMap = data.selected || data.selected_cards || {};
+const selectedList: CardNumbers[] = Object.values(selectedMap as Record<string, AvailableCard>)
+  .map((card) => normalizeCard(card))
+  .filter(Boolean);
 
-        if (data.BingoWinner != null && data.bingoWinnerCardId != null) {
-          setBingoWinner({
-            telegramId: String(data.BingoWinner),
-            card_id: Number(data.bingoWinnerCardId),
-          });
-        } else {
-          setBingoWinner(undefined);
-        }
+setSelectedCards(selectedList);
+// Bingo winner broadcast
+      
+    // Bingo winner
+     if (data.BingoWinner != null && data.bingoWinnerCardId != null) {
+  setBingoWinner({
+    telegramId: String(data.BingoWinner),
+    card_id: Number(data.bingoWinnerCardId),
+  });
+} else {
+  setBingoWinner(undefined);
+}
+ if (data.type === "notification" && data.message) {
+      showToast(data.message); // <-- your toast or alert function
+    }
 
-        if (data.type === "notification" && data.message) {
-          showToast(data.message);
-        }
       } catch (err) {
         console.error("❌ WS parse error", err);
       }
@@ -176,43 +179,51 @@ export const WebSocketProvider = ({ stake, telegramId, children }: Props) => {
     };
 
     ws.onerror = (err) => console.error("❌ WebSocket error:", err);
-  }, [stake, telegramId]);
+  };
 
   // --------------------
-  // Auto connect on mount
+  // Effect
   // --------------------
   useEffect(() => {
     connectWebSocket();
+
     return () => {
       if (reconnectTimeout.current) clearTimeout(reconnectTimeout.current);
       wsRef.current?.close();
       wsRef.current = null;
     };
-  }, [connectWebSocket]);
+  }, [stake, telegramId]);
 
   // --------------------
   // Send card selection
   // --------------------
-  const sendCardSelection = useCallback((card_id: number) => {
-    const msg: WSMessage = { action: "select_card", card_id };
-    if (wsRef.current?.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify(msg));
-    } else {
-      messageQueue.current.push(msg);
-    }
-  }, []);
+const sendCardSelection = (card_id: number) => {
+  const msg: WSMessage = { action: "select_card", card_id };
+  console.log(card_id)
+  if (wsRef.current?.readyState === WebSocket.OPEN) {
+    wsRef.current.send(JSON.stringify(msg));
+  } else {
+    messageQueue.current.push(msg);
+  }
+};
 
-  // --------------------
-  // Send bingo
-  // --------------------
-  const sendBingo = useCallback((card_id: number) => {
-    const msg = { action: "bingo", card_id };
-    if (wsRef.current?.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify(msg));
-    } else {
-      console.log("⚠️ WebSocket not open. Bingo message queued.");
-    }
-  }, []);
+
+// --------------------
+// Send bingo
+// --------------------
+const sendBingo = (card_id: number) => {
+  const msg = {
+    action: "bingo",
+    card_id,
+  };
+  if (wsRef.current?.readyState === WebSocket.OPEN) {
+    wsRef.current.send(JSON.stringify(msg));
+  } else {
+    console.log("⚠️ WebSocket not open. Bingo message queued.");
+    // Optionally queue it if you want, like with card selection
+    
+  }
+};
 
   // --------------------
   // Provide context
@@ -229,7 +240,7 @@ export const WebSocketProvider = ({ stake, telegramId, children }: Props) => {
         telegramId,
         sendCardSelection,
         sendBingo,
-        bingoWinner,
+        bingoWinner, // <-- include winner info
       }}
     >
       {children}
@@ -242,6 +253,8 @@ export const WebSocketProvider = ({ stake, telegramId, children }: Props) => {
 // --------------------
 export const useLobby = () => {
   const context = useContext(LobbyContext);
-  if (!context) throw new Error("useLobby must be used within a WebSocketProvider");
+  if (!context) {
+    throw new Error("useLobby must be used within a WebSocketProvider");
+  }
   return context;
 };

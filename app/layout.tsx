@@ -12,7 +12,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body className="bg-gray-900 text-white font-sans">
-        <Header/>
 
         <main className="min-h-screen">
           {children}

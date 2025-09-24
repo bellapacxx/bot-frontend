@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 type User = {
@@ -9,10 +8,12 @@ type User = {
   balance: number;
 };
 
-function HeaderContent() {
+interface HeaderProps {
+  telegramId?: string;
+}
+
+function HeaderContent({ telegramId }: HeaderProps) {
   const [user, setUser] = useState<User | null>(null);
-  const searchParams = useSearchParams();
-  const telegramId = searchParams.get("user");
 
   useEffect(() => {
     if (!telegramId) return;
@@ -52,18 +53,4 @@ function HeaderContent() {
   );
 }
 
-function HeaderFallback() {
-  return (
-    <header className="bg-mint-500 px-4 sm:px-6 py-4 flex justify-between items-center">
-      Loading header…
-    </header>
-  );
-}
-
-export default function Header() {
-  return (
-    <Suspense fallback={<HeaderFallback />}>
-      <HeaderContent />
-    </Suspense>
-  );
-}
+export default HeaderContent;
