@@ -27,53 +27,63 @@ function HeaderContent({ telegramId }: HeaderProps) {
   }, [telegramId]);
 
   return (
-    <header className="bg-mint-500 px-4 sm:px-6 py-4 shadow-md flex flex-col sm:flex-row justify-between items-center relative">
+    <header className="bg-mint-500 px-2 py-2 shadow-md flex justify-between items-center relative">
       {/* Logo */}
-      <div className="flex items-center justify-between w-full sm:w-auto">
-        <h1 className="text-2xl font-bold text-white flex items-center gap-1">
-          🎮 Lucky Bingo
-        </h1>
+      <h1 className="text-lg font-bold text-white flex items-center gap-1">
+        🎮 Lucky Bingo
+      </h1>
 
-        {/* Hamburger for mobile */}
-        <button
-          className="sm:hidden text-white text-2xl"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          {menuOpen ? <HiX /> : <HiMenu />}
-        </button>
-      </div>
+      {/* Balance always visible */}
+      {user && (
+        <div className="px-2 py-1 bg-black/70 rounded-md text-white text-xs flex items-center gap-1 border border-green-400">
+          <span className="text-green-400 font-bold">💰</span>
+          <span>{user.balance} ETB</span>
+        </div>
+      )}
 
-      {/* Navigation & Balance */}
+      {/* Hamburger menu for mobile */}
+      <button
+        className="sm:hidden text-white text-xl ml-2"
+        onClick={() => setMenuOpen(!menuOpen)}
+      >
+        {menuOpen ? <HiX /> : <HiMenu />}
+      </button>
+
+      {/* Dropdown navigation */}
       <nav
-        className={`flex flex-col sm:flex-row sm:items-center sm:gap-6 w-full sm:w-auto mt-3 sm:mt-0 transition-all duration-300 ${
-          menuOpen ? "max-h-96" : "max-h-0 overflow-hidden sm:max-h-full"
+        className={`absolute top-full right-2 bg-black/80 text-white rounded-md shadow-md overflow-hidden transition-all duration-300 w-40 ${
+          menuOpen ? "max-h-96" : "max-h-0"
         }`}
       >
-        <ul className="flex flex-col sm:flex-row sm:gap-4 gap-2 items-center text-white font-medium">
+        <ul className="flex flex-col">
           <li>
-            <a href="#lobbies" className="hover:text-black transition-colors">
+            <a
+              href="#lobbies"
+              className="block px-4 py-2 text-sm hover:bg-green-500 transition-colors"
+              onClick={() => setMenuOpen(false)}
+            >
               Lobbies
             </a>
           </li>
           <li>
-            <a href="#how-to-play" className="hover:text-black transition-colors">
+            <a
+              href="#how-to-play"
+              className="block px-4 py-2 text-sm hover:bg-green-500 transition-colors"
+              onClick={() => setMenuOpen(false)}
+            >
               How to Play
             </a>
           </li>
           <li>
-            <a href="#contact" className="hover:text-black transition-colors">
+            <a
+              href="#contact"
+              className="block px-4 py-2 text-sm hover:bg-green-500 transition-colors"
+              onClick={() => setMenuOpen(false)}
+            >
               Contact
             </a>
           </li>
         </ul>
-
-        {user && (
-          <div className="mt-2 sm:mt-0 ml-0 sm:ml-4 px-4 py-2 bg-black/70 rounded-lg shadow-md text-white font-semibold text-sm sm:text-base flex items-center gap-2 border border-green-400">
-            <span className="text-green-400 font-bold">💰</span>
-            <span>Balance:</span>
-            <span className="text-mint-400">{user.balance} ETB</span>
-          </div>
-        )}
       </nav>
     </header>
   );

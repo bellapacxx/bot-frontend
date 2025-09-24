@@ -31,18 +31,18 @@ const BingoCardView = ({ card, small = false }: BingoCardViewProps) => {
   }
 
   // Sizes based on small prop
-  const padding = small ? "p-1 sm:p-2" : "p-3 sm:p-4";
-  const fontSize = small ? "text-sm sm:text-base" : "text-base sm:text-lg";
-  const borderRadius = small ? "rounded-md" : "rounded-lg";
+  const padding = small ? "p-[2px]" : "p-2 sm:p-3";
+  const fontSize = small ? "text-[0.55rem]" : "text-sm sm:text-base";
+  const borderRadius = small ? "rounded-sm" : "rounded-md";
 
   return (
     <div
-      className={`grid grid-cols-5 gap-1 ${padding} rounded-xl bg-gradient-to-br from-purple-700 to-pink-500 shadow-lg shadow-purple-400/50 text-center font-bold text-white max-w-xs mx-auto`}
+      className={`grid grid-cols-5 gap-[2px] ${padding} ${borderRadius} bg-gradient-to-br from-purple-700 to-pink-500 shadow-md text-center font-bold text-white max-w-xs mx-auto`}
     >
       {gridNumbers.map((num, idx) => (
         <div
           key={`${card.card_id}-${idx}`}
-          className={`${padding} ${borderRadius} ${fontSize} border border-white flex items-center justify-center transition-transform transform hover:scale-105
+          className={`${padding} ${borderRadius} ${fontSize} border border-white flex items-center justify-center
             ${
               num === "FREE"
                 ? "bg-yellow-400 text-black font-extrabold shadow-inner shadow-yellow-200/50"
