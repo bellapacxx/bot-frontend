@@ -1,3 +1,4 @@
+// app/stake/[stake]/page.tsx (server component)
 import React, { Suspense } from "react";
 import StakePageClient from "./StakePageClient";
 
