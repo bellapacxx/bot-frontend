@@ -9,23 +9,30 @@ interface PageProps {
   stake: number;
 }
 
-// ✅ Inner client component that uses the hook
-function SearchParamsWrapper({ stake }: { stake: number }) {
-  const searchParams = useSearchParams();
-  const telegramId = searchParams.get("user") || "guest";
-
+// ✅ Suspense wrapper for useSearchParams
+function SearchParamsSuspense({ children }: { children: (user: string) => React.ReactNode }) {
   return (
-    <WebSocketProvider stake={stake} telegramId={telegramId}>
-      <LobbyScreen />
-    </WebSocketProvider>
+    <Suspense fallback={<div>Loading…</div>}>
+      <Inner />
+    </Suspense>
   );
+
+  function Inner() {
+    const searchParams = useSearchParams();
+    const telegramId = searchParams.get("user") || "guest";
+    return <>{children(telegramId)}</>;
+  }
 }
 
-// ✅ Outer client component that wraps the hook usage in Suspense
+// ✅ Main page component
 export default function StakePageClient({ stake }: PageProps) {
   return (
-    <Suspense fallback={<div>Loading lobby…</div>}>
-      <SearchParamsWrapper stake={stake} />
-    </Suspense>
+    <SearchParamsSuspense>
+      {(telegramId) => (
+        <WebSocketProvider stake={stake} telegramId={telegramId}>
+          <LobbyScreen />
+        </WebSocketProvider>
+      )}
+    </SearchParamsSuspense>
   );
 }
