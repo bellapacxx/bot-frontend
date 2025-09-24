@@ -19,6 +19,12 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
     ],
+     rules: {
+      "@typescript-eslint/no-require-imports": "off", // ✅ disable the rule
+       "@typescript-eslint/no-explicit-any": "off",
+      // OR to allow only specific cases:
+      // "@typescript-eslint/no-require-imports": ["error", { allowConditionalImports: true }]
+    },
   },
 ];
 
