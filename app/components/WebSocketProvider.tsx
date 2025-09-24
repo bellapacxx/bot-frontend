@@ -7,6 +7,7 @@ import {
   useState,
   ReactNode,
   useRef,
+  useCallback,
 } from "react";
 
 // --------------------
@@ -106,93 +107,79 @@ export const WebSocketProvider = ({ stake, telegramId, children }: Props) => {
   // --------------------
   // Connect WebSocket
   // --------------------
-  const connectWebSocket = () => {
-    if (wsRef.current) return;
+  const connectWebSocket = useCallback(() => {
+  if (wsRef.current) return;
 
-    const ws = new WebSocket(
-      `wss://bingo-backend-production-32e1.up.railway.app/api/lobby/${stake}?telegram_id=${telegramId}`
-    );
-    wsRef.current = ws;
+  const ws = new WebSocket(
+    `wss://bingo-backend-production-32e1.up.railway.app/api/lobby/${stake}?telegram_id=${telegramId}`
+  );
+  wsRef.current = ws;
 
-    ws.onopen = () => {
-      console.log("✅ Connected to lobby", stake);
-      // Flush queued messages
-      messageQueue.current.forEach((msg) => ws.send(JSON.stringify(msg)));
-      messageQueue.current = [];
-    };
-
-    ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        
-        setStatus(data.status ?? "waiting");
-        setCountdown(data.countdown ?? 0);
-
-        // Numbers drawn
-        const numbers = data.numbersDrawn || data.numbers_drawn || [];
-        setNumbersDrawn(Array.isArray(numbers) ? numbers.map(Number) : []);
-
-        // Available cards
-        const cards = data.availableCards || data.available_cards || [];
-        const normalizedAvailable: AvailableCard[] = Array.isArray(cards)
-          ? cards.map(normalizeAvailableCard)
-          : [];
-        setAvailableCards(normalizedAvailable);
-
-        // Selected cards
-        // Selected cards
-const selectedMap = data.selected || data.selected_cards || {};
-const selectedList: CardNumbers[] = Object.values(selectedMap as Record<string, AvailableCard>)
-  .map((card) => normalizeCard(card))
-  .filter(Boolean);
-
-setSelectedCards(selectedList);
-// Bingo winner broadcast
-      
-    // Bingo winner
-     if (data.BingoWinner != null && data.bingoWinnerCardId != null) {
-  setBingoWinner({
-    telegramId: String(data.BingoWinner),
-    card_id: Number(data.bingoWinnerCardId),
-  });
-} else {
-  setBingoWinner(undefined);
-}
- if (data.type === "notification" && data.message) {
-      showToast(data.message); // <-- your toast or alert function
-    }
-
-      } catch (err) {
-        console.error("❌ WS parse error", err);
-      }
-    };
-
-    ws.onclose = (event) => {
-      console.log(`⚠️ Disconnected from lobby (code ${event.code})`);
-      wsRef.current = null;
-      if (!reconnectTimeout.current) {
-        reconnectTimeout.current = setTimeout(() => {
-          reconnectTimeout.current = null;
-          connectWebSocket();
-        }, 2000);
-      }
-    };
-
-    ws.onerror = (err) => console.error("❌ WebSocket error:", err);
+  ws.onopen = () => {
+    console.log("✅ Connected to lobby", stake);
+    messageQueue.current.forEach((msg) => ws.send(JSON.stringify(msg)));
+    messageQueue.current = [];
   };
 
+  ws.onmessage = (event) => {
+    try {
+      const data = JSON.parse(event.data);
+      setStatus(data.status ?? "waiting");
+      setCountdown(data.countdown ?? 0);
+
+      const numbers = data.numbersDrawn || data.numbers_drawn || [];
+      setNumbersDrawn(Array.isArray(numbers) ? numbers.map(Number) : []);
+
+      const cards = data.availableCards || data.available_cards || [];
+      setAvailableCards(Array.isArray(cards) ? cards.map(normalizeAvailableCard) : []);
+
+      const selectedMap = data.selected || data.selected_cards || {};
+      const selectedList: CardNumbers[] = Object.values(selectedMap as Record<string, AvailableCard>)
+        .map(normalizeCard)
+        .filter(Boolean);
+      setSelectedCards(selectedList);
+
+      if (data.BingoWinner != null && data.bingoWinnerCardId != null) {
+        setBingoWinner({
+          telegramId: String(data.BingoWinner),
+          card_id: Number(data.bingoWinnerCardId),
+        });
+      } else {
+        setBingoWinner(undefined);
+      }
+
+      if (data.type === "notification" && data.message) showToast(data.message);
+    } catch (err) {
+      console.error("❌ WS parse error", err);
+    }
+  };
+
+  ws.onclose = (event) => {
+    console.log(`⚠️ Disconnected from lobby (code ${event.code})`);
+    wsRef.current = null;
+    if (!reconnectTimeout.current) {
+      reconnectTimeout.current = setTimeout(() => {
+        reconnectTimeout.current = null;
+        connectWebSocket();
+      }, 2000);
+    }
+  };
+
+  ws.onerror = (err) => console.error("❌ WebSocket error:", err);
+}, [stake, telegramId]); // ✅ dependencies
   // --------------------
   // Effect
   // --------------------
   useEffect(() => {
-    connectWebSocket();
+  connectWebSocket();
 
-    return () => {
-      if (reconnectTimeout.current) clearTimeout(reconnectTimeout.current);
-      wsRef.current?.close();
-      wsRef.current = null;
-    };
-  }, [stake, telegramId]);
+  return () => {
+    if (reconnectTimeout.current) clearTimeout(reconnectTimeout.current);
+    wsRef.current?.close();
+    wsRef.current = null;
+  };
+}, [connectWebSocket]); // ✅ stable reference
+
 
   // --------------------
   // Send card selection
