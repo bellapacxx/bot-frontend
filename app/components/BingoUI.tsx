@@ -36,7 +36,7 @@ export default function BingoUI({ numbers, card }: BingoUIProps) {
       <CalledNumbersList numbers={numbers} />
 
       {/* Horizontal scroll container for board + player card */}
-      <div className="flex gap-4 overflow-x-auto pb-2">
+      <div className="flex gap-2 overflow-x-auto pb-2">
         <div className="flex-shrink-0">
           <BingoBoard drawnNumbers={numbers} />
         </div>
