@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { HiMenu, HiX } from "react-icons/hi";
 
 type User = {
   telegram_id: string;
@@ -14,6 +15,7 @@ interface HeaderProps {
 
 function HeaderContent({ telegramId }: HeaderProps) {
   const [user, setUser] = useState<User | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     if (!telegramId) return;
@@ -25,20 +27,44 @@ function HeaderContent({ telegramId }: HeaderProps) {
   }, [telegramId]);
 
   return (
-    <header className="bg-mint-500 px-4 sm:px-6 py-4 flex flex-col sm:flex-row justify-between items-center shadow-md">
+    <header className="bg-mint-500 px-4 sm:px-6 py-4 shadow-md flex flex-col sm:flex-row justify-between items-center relative">
       {/* Logo */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between w-full sm:w-auto">
         <h1 className="text-2xl font-bold text-white flex items-center gap-1">
-          🎮Lucky Bingo
+          🎮 Lucky Bingo
         </h1>
+
+        {/* Hamburger for mobile */}
+        <button
+          className="sm:hidden text-white text-2xl"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          {menuOpen ? <HiX /> : <HiMenu />}
+        </button>
       </div>
 
       {/* Navigation & Balance */}
-      <nav className="flex flex-col sm:flex-row sm:items-center sm:gap-6 mt-3 sm:mt-0 w-full sm:w-auto">
+      <nav
+        className={`flex flex-col sm:flex-row sm:items-center sm:gap-6 w-full sm:w-auto mt-3 sm:mt-0 transition-all duration-300 ${
+          menuOpen ? "max-h-96" : "max-h-0 overflow-hidden sm:max-h-full"
+        }`}
+      >
         <ul className="flex flex-col sm:flex-row sm:gap-4 gap-2 items-center text-white font-medium">
-          <li><a href="#lobbies" className="hover:text-black transition-colors">Lobbies</a></li>
-          <li><a href="#how-to-play" className="hover:text-black transition-colors">How to Play</a></li>
-          <li><a href="#contact" className="hover:text-black transition-colors">Contact</a></li>
+          <li>
+            <a href="#lobbies" className="hover:text-black transition-colors">
+              Lobbies
+            </a>
+          </li>
+          <li>
+            <a href="#how-to-play" className="hover:text-black transition-colors">
+              How to Play
+            </a>
+          </li>
+          <li>
+            <a href="#contact" className="hover:text-black transition-colors">
+              Contact
+            </a>
+          </li>
         </ul>
 
         {user && (

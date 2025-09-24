@@ -23,10 +23,10 @@ const LobbyScreen = () => {
   };
 
   return (
-    <div className="p-2 sm:p-4 space-y-4 relative max-w-md mx-auto">
+    <div className="p-2 space-y-3 max-w-xs mx-auto">
       {/* Lobby Status */}
       {status !== "in_progress" && (
-        <div className="bg-gray-900/70 backdrop-blur-md rounded-xl p-3 shadow-lg shadow-green-400/50">
+        <div className="bg-black/60 backdrop-blur-sm rounded-xl p-2 shadow-md border border-green-400">
           <LobbyStatus />
         </div>
       )}
@@ -40,14 +40,14 @@ const LobbyScreen = () => {
 
       {/* Card Selection */}
       {status !== "in_progress" && (
-        <div className="bg-gray-900/70 backdrop-blur-md rounded-xl p-2 sm:p-3 shadow-lg shadow-purple-400/50 overflow-x-auto">
+        <div className="bg-black/60 backdrop-blur-sm rounded-xl p-2 shadow-md border border-purple-400 overflow-x-auto">
           <CardSelector availableCards={availableCards} onSelect={handleSelectCard} />
         </div>
       )}
 
       {/* Selected Card Preview */}
       {status !== "in_progress" && (
-        <div className="bg-gray-900/60 backdrop-blur-sm rounded-xl p-2 sm:p-3 shadow-lg shadow-pink-400/40">
+        <div className="bg-black/50 backdrop-blur-sm rounded-xl p-2 shadow-md border border-pink-400">
           <SelectedCard card={selectedCard} />
         </div>
       )}
