@@ -1,20 +1,18 @@
 "use client";
 
 import React from "react";
+import { useSearchParams } from "next/navigation";
 import { WebSocketProvider } from "../components/WebSocketProvider";
 import LobbyScreen from "../components/LobbyScreen";
 
-
-interface PageProps { 
-params: Promise<{ stake: string }>; 
-searchParams: Promise<{ user?: string }>; 
+interface PageProps {
+  params: { stake: string };
 }
 
-export default function StakePage({ params, searchParams }: PageProps) {
-const resolvedParams = React.use(params); 
-const resolvedSearchParams = React.use(searchParams); 
-const stake = Number(resolvedParams.stake); 
-const telegramId = resolvedSearchParams.user || "guest";
+export default function StakePage({ params }: PageProps) {
+  const searchParams = useSearchParams(); // client-side hook
+  const stake = Number(params.stake);
+  const telegramId = searchParams.get("user") || "guest";
 
   return (
     <WebSocketProvider stake={stake} telegramId={telegramId}>
