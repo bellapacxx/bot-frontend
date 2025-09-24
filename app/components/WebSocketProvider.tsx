@@ -39,6 +39,7 @@ interface LobbyContextProps extends LobbyState {
   sendCardSelection: (card_id: number) => void;
    sendBingo: (card_id: number) => void; // <-- add this
    bingoWinner?: { telegramId: string; card_id: number } | undefined;
+    balances: Record<string, number>;
 }
 
 type WSMessage = { action: "select_card"; card_id: number; };
@@ -85,6 +86,7 @@ export const WebSocketProvider = ({ stake, telegramId, children }: Props) => {
   const reconnectTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const messageQueue = useRef<WSMessage[]>([]);
    const [bingoWinner, setBingoWinner] = useState<{ telegramId: string; card_id: number } | undefined>(undefined);
+const [balances, setBalances] = useState<Record<string, number>>({});
 
   // --------------------
   // Normalize cards
@@ -161,7 +163,10 @@ setSelectedCards(selectedList);
  if (data.type === "notification" && data.message) {
       showToast(data.message); // <-- your toast or alert function
     }
-
+   
+if (data.balances) {
+      setBalances(data.balances); // data.balances should be { telegramId: balance }
+    }
       } catch (err) {
         console.error("❌ WS parse error", err);
       }
@@ -241,6 +246,7 @@ const sendBingo = (card_id: number) => {
         sendCardSelection,
         sendBingo,
         bingoWinner, // <-- include winner info
+        balances, // <-- include balances
       }}
     >
       {children}

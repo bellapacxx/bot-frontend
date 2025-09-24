@@ -1,30 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useState } from "react";
 import { HiMenu, HiX } from "react-icons/hi";
-
-type User = {
-  telegram_id: string;
-  balance: number;
-};
+import { useLobby } from "../components/WebSocketProvider"; // adjust path
 
 interface HeaderProps {
   telegramId?: string;
 }
 
 function HeaderContent({ telegramId }: HeaderProps) {
-  const [user, setUser] = useState<User | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const lobby = useLobby(); // get the lobby context
 
-  useEffect(() => {
-    if (!telegramId) return;
-
-    axios
-      .get(`https://bingo-backend-production-32e1.up.railway.app/api/users/${telegramId}`)
-      .then((res) => setUser(res.data))
-      .catch((err) => console.error("Failed to fetch user:", err));
-  }, [telegramId]);
+  // get current user's balance
+  const myBalance = telegramId ? lobby.balances[telegramId] ?? 0 : 0;
 
   return (
     <header className="bg-mint-500 px-2 py-2 shadow-md flex justify-between items-center relative">
@@ -34,12 +23,10 @@ function HeaderContent({ telegramId }: HeaderProps) {
       </h1>
 
       {/* Balance always visible */}
-      {user && (
-        <div className="px-2 py-1 bg-black/70 rounded-md text-white text-xs flex items-center gap-1 border border-green-400">
-          <span className="text-green-400 font-bold">💰</span>
-          <span>{user.balance} ETB</span>
-        </div>
-      )}
+      <div className="px-2 py-1 bg-black/70 rounded-md text-white text-xs flex items-center gap-1 border border-green-400">
+        <span className="text-green-400 font-bold">💰</span>
+        <span>{myBalance.toFixed(2)} ETB</span>
+      </div>
 
       {/* Hamburger menu for mobile */}
       <button
