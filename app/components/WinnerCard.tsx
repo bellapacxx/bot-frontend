@@ -18,7 +18,10 @@ interface WinnerCardProps {
 const WinnerCard: React.FC<WinnerCardProps> = ({ card, numbersDrawn }) => {
   const columns = ["B", "I", "N", "G", "O"];
   const isNumberDrawn = (num: number | null | string) =>
-    num !== null && num !== "" && num !== "FREE" && numbersDrawn.includes(num as number);
+    num !== null &&
+    num !== "" &&
+    num !== "FREE" &&
+    numbersDrawn.includes(num as number);
 
   // 🔄 Transpose into rows
   const gridNumbers: (number | string)[] = [];

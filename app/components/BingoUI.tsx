@@ -8,24 +8,26 @@ import PlayerCard from "./PlayerCard";
 import WinnerCard from "./WinnerCard";
 import WinningsDisplay from "./WinningsDisplay";
 
-type Card = { 
-  card_id: number; 
-  B: (number | null)[]; 
-  I: (number | null)[]; 
-  N: (number | null)[]; 
-  G: (number | null)[]; 
-  O: (number | null)[] 
+type Card = {
+  card_id: number;
+  B: (number | null)[];
+  I: (number | null)[];
+  N: (number | null)[];
+  G: (number | null)[];
+  O: (number | null)[];
 };
 
-interface BingoUIProps { 
-  numbers: number[]; 
-  card: Card | null; 
+interface BingoUIProps {
+  numbers: number[];
+  card: Card | null;
 }
 
 export default function BingoUI({ numbers, card }: BingoUIProps) {
-  const { bingoWinner, numbersDrawn } = useLobby();
+  const { bingoWinner, numbersDrawn, bingoWinnerName } = useLobby();
   const cardsJSON = require("../data/cards.json");
-  const winnerCard = cardsJSON.find((c: Card) => c.card_id === bingoWinner?.card_id);
+  const winnerCard = cardsJSON.find(
+    (c: Card) => c.card_id === bingoWinner?.card_id
+  );
   const winnerNumbers = [...numbersDrawn];
 
   return (
@@ -58,9 +60,16 @@ export default function BingoUI({ numbers, card }: BingoUIProps) {
               🎉 Bingo Winner! 🎉
             </h2>
             <p className="mb-3 text-sm sm:text-base">
-              Player ID: <span className="font-semibold text-white">{bingoWinner?.telegramId}</span>
+              Player:{bingoWinnerName}
+              <span className="font-semibold text-white">
+                {bingoWinner?.telegramId}
+              </span>
             </p>
-            <WinnerCard card={winnerCard} numbersDrawn={winnerNumbers} />
+            <WinnerCard
+              card={winnerCard}
+              numbersDrawn={winnerNumbers}
+              bingoWinnerName={bingoWinnerName}
+            />
           </div>
         </div>
       )}
