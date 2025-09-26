@@ -61,9 +61,6 @@ export default function BingoUI({ numbers, card }: BingoUIProps) {
             </h2>
             <p className="mb-3 text-sm sm:text-base">
               Player:{bingoWinnerName}
-              <span className="font-semibold text-white">
-                {bingoWinner?.telegramId}
-              </span>
             </p>
             <WinnerCard card={winnerCard} numbersDrawn={winnerNumbers} />
           </div>
