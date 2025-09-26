@@ -184,7 +184,7 @@ export const WebSocketProvider = ({ stake, telegramId, children }: Props) => {
         } else {
           setPotentialWinnings(undefined);
         }
-        console.log(bingoWinnerName);
+
         if (data.bingoWinnerName) {
           setBingoWinnerName(data.bingoWinnerName);
         } else {
