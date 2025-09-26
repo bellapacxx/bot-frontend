@@ -19,7 +19,7 @@ function HeaderContent({ telegramId }: HeaderProps) {
     <header className="bg-mint-500 px-2 py-2 shadow-md flex justify-between items-center relative">
       {/* Logo */}
       <h1 className="text-sm font-bold text-white flex items-center gap-1">
-        🎮 Lucky Bingo
+        Gojo Bingo
       </h1>
 
       {/* Balance always visible */}
