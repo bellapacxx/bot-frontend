@@ -23,7 +23,7 @@ interface BingoUIProps {
 }
 
 export default function BingoUI({ numbers, card }: BingoUIProps) {
-  const { bingoWinner, numbersDrawn, bingoWinnerName } = useLobby();
+  const { bingoWinner, numbersDrawn } = useLobby();
   const cardsJSON = require("../data/cards.json");
   const winnerCard = cardsJSON.find(
     (c: Card) => c.card_id === bingoWinner?.card_id
@@ -60,7 +60,7 @@ export default function BingoUI({ numbers, card }: BingoUIProps) {
               🎉 Bingo Winner! 🎉
             </h2>
             <p className="mb-3 text-sm sm:text-base">
-              Player:{bingoWinnerName}
+              Player:
               <span className="font-semibold text-white">
                 {bingoWinner?.telegramId}
               </span>
