@@ -29,23 +29,23 @@ export default function BingoUI({ numbers, card }: BingoUIProps) {
   const winnerNumbers = [...numbersDrawn];
 
   return (
-    <div className="space-y-4 px-4 pb-6 max-w-md mx-auto">
+    <div className="w-full sm:max-w-lg mx-auto px-2 py-6 space-y-4">
       {/* Current Called Number */}
       <CalledNumber numbers={numbers} />
 
       {/* List of Called Numbers */}
       <CalledNumbersList numbers={numbers} />
 
-      {/* Horizontal scroll container for board + player card */}
-      <div className="flex gap-4 overflow-x-auto pb-3">
-        <div className="flex-shrink-0">
-          <BingoBoard drawnNumbers={numbers}/>
+      {/* Horizontal container for board + player card */}
+      <div className="flex gap-2 pb-3 w-full">
+        {/* Bingo Board */}
+        <div className="flex-1 min-w-0">
+          <BingoBoard drawnNumbers={numbers} />
         </div>
-        <div className="flex-shrink-0 relative w-72 sm:w-80">
-          {/* Winnings Display above PlayerCard */}
-          <WinningsDisplay />
 
-          {/* Player card */}
+        {/* Player Card + Winnings Display */}
+        <div className="flex-1 min-w-0 relative">
+          <WinningsDisplay />
           <PlayerCard card={card} />
         </div>
       </div>

@@ -23,31 +23,31 @@ const LobbyScreen = () => {
   };
 
   return (
-    <div className="p-2 space-y-3 max-w-xs mx-auto">
+    <div className="w-full max-w-lg mx-auto p-2 space-y-4">
       {/* Lobby Status */}
       {status !== "in_progress" && (
-        <div className="bg-black/60 backdrop-blur-sm rounded-xl p-2 shadow-md border border-green-400">
+        <div className="bg-black/60 backdrop-blur-sm rounded-xl p-3 shadow-md border border-green-400">
           <LobbyStatus />
         </div>
       )}
 
       {/* Bingo Game View */}
       {status === "in_progress" && (
-        <div className="transition-all duration-500 overflow-x-auto">
+        <div className="transition-all duration-500 w-full">
           <BingoUI numbers={numbersDrawn} card={selectedCard} />
         </div>
       )}
 
       {/* Card Selection */}
       {status !== "in_progress" && (
-        <div className="bg-black/60 backdrop-blur-sm rounded-xl p-2 shadow-md border border-purple-400 overflow-x-auto">
+        <div className="bg-black/60 backdrop-blur-sm rounded-xl p-3 shadow-md border border-purple-400 w-full">
           <CardSelector availableCards={availableCards} onSelect={handleSelectCard} />
         </div>
       )}
 
       {/* Selected Card Preview */}
       {status !== "in_progress" && (
-        <div className="bg-black/50 backdrop-blur-sm rounded-xl p-2 shadow-md border border-pink-400">
+        <div className="bg-black/50 backdrop-blur-sm rounded-xl p-3 shadow-md border border-pink-400 w-full">
           <SelectedCard card={selectedCard} />
         </div>
       )}
