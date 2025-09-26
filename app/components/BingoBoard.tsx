@@ -19,9 +19,9 @@ const BingoBoard: React.FC<BingoBoardProps> = ({ drawnNumbers }) => {
     return (
       <div
         key={num}
-        className={`flex-shrink-0 h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center rounded text-[7px] sm:text-[8px] font-bold transition-all duration-200
+        className={`flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded text-[12px] sm:text-[14px] font-bold transition-all duration-200
           ${isDrawn
-            ? "bg-green-500 text-black shadow-[0_0_3px_rgba(0,255,128,0.6)]"
+            ? "bg-green-500 text-black shadow-[0_0_6px_rgba(0,255,128,0.7)]"
             : "bg-gray-900 text-gray-300"
           }`}
       >
@@ -31,14 +31,16 @@ const BingoBoard: React.FC<BingoBoardProps> = ({ drawnNumbers }) => {
   };
 
   return (
-    <div className="mt-1 w-full overflow-x-auto px-1 py-1 backdrop-blur-sm bg-black/25 rounded-lg border border-green-400 shadow-[0_0_6px_rgba(0,255,128,0.3)]">
-      <h2 className="text-xs sm:text-sm font-bold mb-1 text-center text-green-400 tracking-wide">
-        BINGO Board
+    <div className="mt-2 w-full overflow-x-auto px-3 py-3 backdrop-blur-sm bg-black/30 rounded-lg border border-green-400 shadow-[0_0_10px_rgba(0,255,128,0.4)]">
+      <h2 className="text-base sm:text-lg font-bold mb-3 text-center text-green-400 tracking-wide">
+        የቢንጎ ቦርድ
       </h2>
-      <div className="flex gap-0.5 min-w-max">
+      <div className="flex gap-2 min-w-max">
         {Object.entries(columns).map(([col, nums]) => (
-          <div key={col} className="flex flex-col gap-0.5 items-center">
-            <div className="text-[8px] sm:text-[9px] font-bold text-green-300">{col}</div>
+          <div key={col} className="flex flex-col gap-2 items-center">
+            <div className="text-[12px] sm:text-[14px] font-bold text-green-300">
+              {col}
+            </div>
             {nums.map(renderCell)}
           </div>
         ))}

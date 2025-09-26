@@ -40,10 +40,10 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ card }) => {
 
   return (
     <div className="mt-2">
-      <h2 className="text-base font-bold mb-1 text-center text-green-400 tracking-wider">Your Card</h2>
+      <h2 className="text-base font-bold mb-1 text-center text-gray-900 tracking-wider">የካርቴላ ቁጥር {card.card_id}</h2>
       <div className="grid grid-cols-5 gap-1 max-w-xs w-full mx-auto backdrop-blur-sm bg-black/20 rounded-xl p-1 border border-green-400 shadow-[0_0_12px_rgba(0,255,128,0.3)]">
         {columns.map((col) => (
-          <div key={col} className="text-center font-bold py-1 text-[10px] sm:text-xs text-green-300">{col}</div>
+          <div key={col} className="text-center font-bold py-1 text-[10px] sm:text-xs text-green-200">{col}</div>
         ))}
         {gridNumbers.map((num, idx) => {
           const isFree = num === "FREE";
@@ -70,7 +70,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ card }) => {
           onClick={handleBingoClick} 
           className="px-4 sm:px-6 py-1 sm:py-2 bg-gradient-to-r from-red-500 to-pink-500 text-white text-sm sm:text-base font-bold rounded-md shadow-sm hover:scale-105 hover:shadow-pink-400/50 transition-transform"
         >
-          Bingo
+          ቢንጎ
         </button>
       </div>
     </div>

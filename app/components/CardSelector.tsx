@@ -19,7 +19,7 @@ const CardSelector = ({ availableCards, onSelect }: CardSelectorProps) => {
   return (
     <section className="mb-4 px-1">
       <h2 className="text-sm font-bold mb-2 text-center text-green-400 tracking-wide">
-        Select a Bingo Card
+        ካርቴላ ይምረጡ
       </h2>
 
       {/* Grid for all cards */}
@@ -53,7 +53,7 @@ const CardSelector = ({ availableCards, onSelect }: CardSelectorProps) => {
 
       {/* Available cards info */}
       <p className="text-[0.6rem] mt-1 text-center text-gray-400">
-        {availableCards.filter(c => !c.taken).length} cards available
+        {availableCards.filter(c => !c.taken).length} ካርቴላ ይቀራሉ
       </p>
     </section>
   );

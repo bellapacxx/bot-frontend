@@ -31,6 +31,7 @@ interface LobbyState {
   availableCards: AvailableCard[];
   selectedCards: CardNumbers[];
   numbersDrawn: number[];
+  potentialWinnings?: number; // <-- add this
 }
 
 interface LobbyContextProps extends LobbyState {
@@ -87,6 +88,7 @@ export const WebSocketProvider = ({ stake, telegramId, children }: Props) => {
   const messageQueue = useRef<WSMessage[]>([]);
    const [bingoWinner, setBingoWinner] = useState<{ telegramId: string; card_id: number } | undefined>(undefined);
 const [balances, setBalances] = useState<Record<string, number>>({});
+const [potentialWinnings, setPotentialWinnings] = useState<number | undefined>(undefined);
 
   // --------------------
   // Normalize cards
@@ -160,10 +162,15 @@ setSelectedCards(selectedList);
 } else {
   setBingoWinner(undefined);
 }
+if (data.potentialWinnings != null) {
+      setPotentialWinnings(Number(data.potentialWinnings)); // <-- set potential winnings
+    } else {
+      setPotentialWinnings(undefined);
+    }
  if (data.type === "notification" && data.message) {
       showToast(data.message); // <-- your toast or alert function
     }
-   
+      
 if (data.balances) {
       setBalances(data.balances); // data.balances should be { telegramId: balance }
     }
@@ -247,6 +254,7 @@ const sendBingo = (card_id: number) => {
         sendBingo,
         bingoWinner, // <-- include winner info
         balances, // <-- include balances
+        potentialWinnings
       }}
     >
       {children}
@@ -264,3 +272,7 @@ export const useLobby = () => {
   }
   return context;
 };
+
+function setPotentialWinnings(arg0: number) {
+  throw new Error("Function not implemented.");
+}
