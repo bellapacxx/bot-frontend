@@ -29,7 +29,7 @@ export default function BingoUI({ numbers, card }: BingoUIProps) {
   const winnerNumbers = [...numbersDrawn];
 
   return (
-    <div className="w-full sm:max-w-lg mx-auto px-2 py-6 space-y-4">
+    <div className="w-full sm:max-w-lg mx-auto px-2 py-2 space-y-4">
       {/* Current Called Number */}
       <CalledNumber numbers={numbers} />
 

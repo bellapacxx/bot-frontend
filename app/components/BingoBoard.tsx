@@ -31,11 +31,11 @@ const BingoBoard: React.FC<BingoBoardProps> = ({ drawnNumbers }) => {
   };
 
   return (
-    <div className="mt-1 w-full overflow-x-auto px-2 py-2 backdrop-blur-sm bg-black/30 rounded-lg border border-green-400 shadow-[0_0_10px_rgba(0,255,128,0.4)]">
-      <h2 className="text-base sm:text-lg font-bold mb-3 text-center text-green-400 tracking-wide">
+    <div className="mt-1 w-full overflow-x-auto px-2 py-1 backdrop-blur-sm bg-black/30 rounded-lg border border-green-400 shadow-[0_0_10px_rgba(0,255,128,0.4)]">
+      <h2 className="text-base sm:text-lg font-bold mb-1 text-center text-green-400 tracking-wide">
         የቢንጎ ቦርድ
       </h2>
-      <div className="flex gap-2 min-w-max">
+      <div className="flex gap-1 min-w-max">
         {Object.entries(columns).map(([col, nums]) => (
           <div key={col} className="flex flex-col gap-1 items-center">
             <div className="text-[12px] sm:text-[14px] font-bold text-green-300">
