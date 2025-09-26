@@ -65,11 +65,7 @@ export default function BingoUI({ numbers, card }: BingoUIProps) {
                 {bingoWinner?.telegramId}
               </span>
             </p>
-            <WinnerCard
-              card={winnerCard}
-              numbersDrawn={winnerNumbers}
-              bingoWinnerName={bingoWinnerName}
-            />
+            <WinnerCard card={winnerCard} numbersDrawn={winnerNumbers} />
           </div>
         </div>
       )}
