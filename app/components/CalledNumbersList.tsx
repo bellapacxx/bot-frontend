@@ -22,7 +22,7 @@ const CalledNumbersList: React.FC<CalledNumbersListProps> = ({ numbers }) => {
       : `O${num}`;
 
   return (
-    <div className="flex gap-1 mt-1 overflow-x-auto px-1 py-1">
+    <div className="flex gap-1 overflow-x-auto px-1 py-1">
       {lastFive.map((num, idx) => (
         <span
           key={idx}
