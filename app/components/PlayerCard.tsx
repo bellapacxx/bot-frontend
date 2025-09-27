@@ -65,7 +65,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ card }) => {
             <button
               key={idx}
               onClick={() => toggleMark(typeof num === "number" ? num : null)}
-              className={`h-8 sm:h-10 flex items-center justify-center rounded-md text-[12px] sm:text-xs font-bold transition-all duration-300
+              className={`h-8 sm:h-10 flex items-center justify-center rounded-md text-[14px] sm:text-xs font-bold transition-all duration-300
                 ${
                   isFree
                     ? "bg-gradient-to-br from-purple-600 to-pink-500 text-white shadow-sm shadow-pink-400/50"
