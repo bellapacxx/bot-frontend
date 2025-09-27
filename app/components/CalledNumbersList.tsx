@@ -22,11 +22,11 @@ const CalledNumbersList: React.FC<CalledNumbersListProps> = ({ numbers }) => {
       : `O${num}`;
 
   return (
-    <div className="flex gap-1 mt-1 overflow-x-auto px-1 py-0.5">
+    <div className="flex gap-1 mt-1 overflow-x-auto px-1 py-1">
       {lastFive.map((num, idx) => (
         <span
           key={idx}
-          className="flex-shrink-0 px-1 py-0.5 bg-gradient-to-r from-green-500 to-green-400 text-black font-bold rounded shadow-sm text-[0.6rem] text-center hover:scale-105 transition-transform"
+          className="flex-shrink-0 px-1 py-1 bg-gradient-to-r from-green-500 to-green-400 text-black font-bold rounded shadow-sm  text-center hover:scale-105 transition-transform"
         >
           {formatNumber(num)}
         </span>

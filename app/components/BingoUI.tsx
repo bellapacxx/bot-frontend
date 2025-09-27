@@ -31,12 +31,17 @@ export default function BingoUI({ numbers, card }: BingoUIProps) {
   const winnerNumbers = [...numbersDrawn];
 
   return (
-    <div className="w-full sm:max-w-lg mx-auto px-2 py-2 space-y-4">
+    <div className="w-full sm:max-w-lg mx-auto px-2 py-2 space-y-2">
       {/* Current Called Number */}
       <CalledNumber numbers={numbers} />
 
       {/* List of Called Numbers */}
-      <CalledNumbersList numbers={numbers} />
+      <div className="flex flex-row gap-4">
+        <CalledNumbersList numbers={numbers} />
+        <div className="ml-auto">
+          <WinningsDisplay />
+        </div>
+      </div>
 
       {/* Horizontal container for board + player card */}
       <div className="flex gap-2 pb-3 w-full">
@@ -47,7 +52,6 @@ export default function BingoUI({ numbers, card }: BingoUIProps) {
 
         {/* Player Card + Winnings Display */}
         <div className="flex-1 min-w-0 relative">
-          <WinningsDisplay />
           <PlayerCard card={card} />
         </div>
       </div>
